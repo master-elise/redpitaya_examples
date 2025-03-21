@@ -1,0 +1,122 @@
+// bien verifier que /dev/jmf N'EXISTE PAS pour ne pas entrer en conflit avec misc dev
+
+#include <linux/module.h>       /* Needed by all modules */
+#include <linux/kernel.h>       /* Needed for KERN_INFO */
+#include <linux/init.h>         /* Needed for the macros */
+#include <linux/fs.h>           // define fops
+#include <asm/uaccess.h>        // get_user, put_user
+#include <linux/miscdevice.h>   // allocation dynamique de /dev
+
+static int dev_open(struct inode *inod,struct file *fil);
+static int dev_read(struct file *fil,char *buff,size_t len,loff_t *off);
+static int dev_write(struct file *fil,const char *buff,size_t len,loff_t *off); 
+// static int dev_ioctl(struct inode *inod,struct file *fil, unsigned int cmd, unsigned long arg); // pre-2.6.35
+static long dev_ioctl(struct file *f, unsigned int cmd, unsigned long arg); // actuel
+static int dev_rls(struct inode *inod,struct file *fil);
+
+struct miscdevice jmfdev;
+
+int hello_start(void);
+void hello_end(void);
+
+static struct file_operations fops=
+{.read=dev_read,
+ .open=dev_open,
+ .unlocked_ioctl=dev_ioctl,
+ .write=dev_write,
+ .release=dev_rls,};
+
+int hello_start()  // init_module(void) 
+{//int t=register_chrdev(90,"jmf",&fops);  // major = 90
+ //if (t<0) printk(KERN_ALERT "registration failed\n");
+ //   else printk(KERN_ALERT "registration success\n");
+ jmfdev.name = "jmf";  // /dev/jmf  de major pris dans la classe misc
+ jmfdev.minor = MISC_DYNAMIC_MINOR;
+ jmfdev.fops = &fops;
+ misc_register(&jmfdev);  // creation dynamique de l'entree /dev/jmf
+
+ printk(KERN_INFO "Hello ioctl\n");
+ return 0;
+}
+
+void hello_end() // cleanup_module(void)
+{printk(KERN_INFO "Goodbye\n");
+ // unregister_chrdev(90,"jmf");
+ misc_deregister(&jmfdev);
+}
+
+static int dev_rls(struct inode *inod,struct file *fil)
+{printk(KERN_ALERT "bye\n");
+ return 0;
+}
+
+static int dev_open(struct inode *inod,struct file *fil)
+{printk(KERN_ALERT "ioctl open\n");
+ return 0;
+}
+
+static int dev_read(struct file *fil,char *buff,size_t len,loff_t *off)
+{char buf[15]="Hello read\n\0";
+ int readPos=0;
+ printk(KERN_ALERT "read\n");
+ while (len && (buf[readPos]!=0)) 
+   {put_user(buf[readPos],buff++);
+    readPos++;
+    len--;
+   }
+ return readPos;
+}
+
+static int dev_write(struct file *fil,const char *buff,size_t len,loff_t *off)
+{int l=0,mylen;
+ char buf[15];
+ printk(KERN_ALERT "write ");
+ if (len>14) mylen=14; else mylen=len;
+ for (l=0;l<mylen;l++) buf[l]=buff[l];
+ buf[mylen]=0;
+ printk(KERN_ALERT "%s \n",buf);
+ return len;
+}
+
+// static int dev_ioctl(struct inode *inod,struct file *fil, unsigned int cmd, unsigned long arg) // pre-2.6.35
+static long dev_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+{static char var[10];
+ printk(KERN_ALERT "ioctl CMD%d",cmd);
+ switch ( cmd ) 
+ {case 0: copy_from_user(var,(char*)arg,5);
+          // printk(KERN_ALERT "ioctl0: %s",(char*)var);
+          break;
+  case 1: // printk(KERN_ALERT "ioctl1: %s",(char*)arg);
+          copy_to_user((char*)arg,var,5);
+          break;
+  default:printk(KERN_ALERT "unknown ioctl");break;
+ }
+ return 0;
+}
+
+module_init(hello_start);
+module_exit(hello_end);
+
+/*
+[  385.604311] ioctl CMD0
+[  385.606829] ioctl0: Messset_msg message: Messioctl CMD1
+
+[  385.612630] BUG: recent printk recursion!
+[  385.612637] Internal error: : 1b [#1] SMP ARM
+[  385.621324] Modules linked in: 2mymod(PO) usb_f_ecm g_ether usb_f_rndis u_ether libcomposite c]
+[  385.632729] CPU: 0 PID: 112 Comm: ioctl.arm Tainted: P           O    4.3.0-rc6 #1
+[  385.640287] Hardware name: Allwinner sun4i/sun5i Families
+[  385.645679] task: cf7fe140 ti: cf766000 task.ti: cf766000
+[  385.651085] PC is at strnlen+0x8/0x5c
+[  385.654746] LR is at string+0x34/0x100
+[  385.658492] pc : [<c020dcf8>]    lr : [<c020f210>]    psr: a0000093
+[  385.658492] sp : cf767e38  ip : ffffffff  fp : cf767e68
+[  385.669952] r10: c043d808  r9 : cf767f20  r8 : bf0303f8
+[  385.675170] r7 : beec7cd4  r6 : c062b3c4  r5 : c062afee  r4 : 0000ffff
+[  385.681688] r3 : ff0a0004  r2 : beec7cd4  r1 : ffffffff  r0 : beec7cd4
+[  385.688208] Flags: NzCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment none
+[  385.695419] Control: 10c5387d  Table: 4ec64019  DAC: 00000051
+[  385.701156] Process ioctl.arm (pid: 112, stack limit = 0xcf766210)
+[  385.707327] Stack: (0xcf767e38 to 0xcf768000)
+[  385.711681] 7e20:                                                       ff0a0004 c062afee
+*/
