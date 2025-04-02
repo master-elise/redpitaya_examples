@@ -1,4 +1,4 @@
-obj-m += mymmap.o mymod.o 0mymod.o 1mymod.o 2mymod.o 3mymod_gpiolib_devicetree.o 4mymod_pc.o 6mymod_int.o timer_mutex_read.o # 7mymod_task.o 3mymod_gpiolib_devicetree.o
+obj-m += 0mymod.o 1mymod.o 2mymod.o 3mymod_gpiolib_devicetree.o 4mymod_pc.o 6mymod_int.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
