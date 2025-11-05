@@ -9,10 +9,10 @@ static ssize_t gpio_simple_store(struct device *dev, struct device_attribute *at
 
 static ssize_t gpio_simple_show(struct device *dev, struct device_attribute *attr, char *buf)
 {return sprintf(buf, "show\n");}
-// cat /sys/bus/platform/devices/gpio-simple.0/value 
+// cat /sys/bus/platform/devices/gpio-simple.0/value
 // show
 
-/* warning! need write-all permission so overriding check */ 
+/* warning! need write-all permission so overriding check */
 #undef VERIFY_OCTAL_PERMISSIONS
 #define VERIFY_OCTAL_PERMISSIONS(perms) (perms)
 static DEVICE_ATTR(value, 0666, gpio_simple_show, gpio_simple_store);

@@ -9,10 +9,10 @@ static ssize_t gpio_simple_store(struct device *dev, struct device_attribute *at
 
 static ssize_t gpio_simple_show(struct device *dev, struct device_attribute *attr, char *buf)
 {return sprintf(buf, "show\n");}
-// cat /sys/bus/platform/devices/gpio-simple.0/value 
+// cat /sys/bus/platform/devices/gpio-simple.0/jmfr
 // show
 
-// JMF avoid error with user (non root) permissions on last bit by overriding 
+// JMF avoid error with user (non root) permissions on last bit by overriding
 //     the VERIFY_OCTAL_PERMISSIONS macro
 #define VERIFY_OCTAL_PERMISSIONS(p) (p)
 
