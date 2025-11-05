@@ -7,6 +7,9 @@ processor.
 Check ``/proc/devices`` for already allocated major numbers when creating
 a new entry in ``/dev`` with ``mknod /dev/mydev c major minor``.
 
+``ln -s Makefile.red Makefile`` to compile on the Red Pitaya (or symbolic link of ``Makefile.pc``
+to compile on the host)
+
 * ``0mymod.c``: first example, ``module_init`` and ``module_exit``, getting familiar with the 
 compilation procedure and the ``Makefile``
 * ``1mymod.c``: communication and definition of the system call handling functions

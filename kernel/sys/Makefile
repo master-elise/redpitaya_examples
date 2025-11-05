@@ -1,21 +1,20 @@
-obj-m	+= plateforme_simple.o
-obj-m	+= plateforme_comm.o
-obj-m	+= plateforme_comm_rw.o
-obj-m	+= plateforme_comm_timer.o
-obj-m	+= deux.o
-obj-m	+= driver_alone.o
-obj-m	+= device_alone.o
-obj-m	+= driver_alone2.o
+obj-m	+= 1plateforme_simple.o
+obj-m	+= 2plateforme_double.o
+obj-m	+= 3device_alone.o
+obj-m	+= 4driver_alone.o
+obj-m	+= 5plateforme_comm.o
+obj-m	+= 6plateforme_comm_rw.o
+obj-m	+= 7plateforme_comm_timer.o
+obj-m	+= 4driver_alone.o
 
-# obj-m	+= dummy_spi.o
-
-# ccflags-y:=-E
+# keep preprocessor output with .i extension
+EXTRA_CFLAGS="-save-temps" 
 
 all:
 	make -C /usr/src/linux-headers-`uname -r` M=$(PWD) modules
 
 clean:
-	rm -f *.o *.ko modules.order  Module.symvers *.mod.c *.mod
+	rm -f *.o *.ko modules.order  Module.symvers *.mod.c *.mod *.i *.s .*.cmd
 
 #echo >&2 "  ERROR: Kernel configuration is invalid.";           \
 #echo >&2 "         include/generated/autoconf.h or include/config/auto.conf are missing.";\
