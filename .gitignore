@@ -1,3 +1,7 @@
 *.o
 *.mod
 *.mod.c
+*.i
+*.ko
+*.cmd
+*.s
