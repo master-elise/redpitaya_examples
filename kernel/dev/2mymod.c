@@ -62,6 +62,7 @@ static ssize_t dev_read(struct file *fil,char *buff,size_t len,loff_t *off)
  printk(KERN_ALERT "read %d %d\n",imajor(fil->f_inode),iminor(fil->f_inode)); // file_inode(fil)
  // readPos=0;while (len && (buf[readPos]!=0)) {put_user(buf[readPos],buff++);readPos++;len--;}
  dummy=copy_to_user(buff,buf,readPos);
+ *off += readPos;
  return readPos;
 }
 

@@ -114,6 +114,7 @@ static ssize_t dev_read(struct file *fil,char *buff,size_t len,loff_t *off)
     readPos++;
     len--;
    }
+ *off += readPos;
  return readPos;
 }
 
