@@ -7,8 +7,10 @@ processor.
 Check ``/proc/devices`` for already allocated major numbers when creating
 a new entry in ``/dev`` with ``mknod /dev/mydev c major minor``.
 
-``ln -s Makefile.red Makefile`` to compile on the Red Pitaya (or symbolic link of ``Makefile.pc``
-to compile on the host)
+``ln -s Makefile.red Makefile`` to compile for the Red Pitaya (or symbolic link of ``Makefile.pc``
+to compile for the host). All compilation is completed on the host using the
+Buildroot toolchain in the ``output/host/usr/bin`` subdirectory: never compile
+on the target !
 
 * ``0mymod.c``: first example, ``module_init`` and ``module_exit``, getting familiar with the 
 compilation procedure and the ``Makefile``
