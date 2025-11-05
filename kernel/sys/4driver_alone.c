@@ -1,7 +1,13 @@
+#include <linux/version.h>  // VERSION_CODE
 #include <linux/module.h>
 #include <linux/platform_device.h>
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 10, 0)
 static void simple_remove(struct platform_device *);
+#else
+static int simple_remove(struct platform_device *);
+#endif
+
 static int simple_probe(struct platform_device *);
 
 static struct platform_driver simple_driver = {
@@ -10,8 +16,16 @@ static struct platform_driver simple_driver = {
         .driver = {.name   = "jmf_simple",},
 };
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 10, 0)
 static void simple_remove(struct platform_device *pdev)
-{printk(KERN_ALERT "Au revoir\n");}
+#else
+static int simple_remove(struct platform_device *pdev)
+#endif
+{printk(KERN_ALERT "Au revoir\n");
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 10, 0)
+ return(0);
+#endif
+}
 
 static int simple_probe(struct platform_device *pdev)
 {printk(KERN_ALERT "Bonjour\n");return 0;}

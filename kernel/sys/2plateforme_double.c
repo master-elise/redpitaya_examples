@@ -1,10 +1,19 @@
+#include <linux/version.h>  // VERSION_CODE
 #include <linux/module.h>
 #include <linux/platform_device.h>
 
 static struct platform_device *pdev1,*pdev2;
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 10, 0)
 static void gpio_simple_remove(struct platform_device *pdev)
-{printk(KERN_ALERT "Au revoir %d\n",pdev->id);}
+#else
+static int gpio_simple_remove(struct platform_device *pdev)
+#endif
+{printk(KERN_ALERT "Au revoir %d\n",pdev->id);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 10, 0)
+ return(0);
+#endif
+}
 
 static int gpio_simple_probe(struct platform_device *pdev)
 {printk(KERN_ALERT "Bonjour %d\n",pdev->id);return 0;}

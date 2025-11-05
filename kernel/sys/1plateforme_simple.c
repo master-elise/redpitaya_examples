@@ -1,8 +1,14 @@
+#include <linux/version.h>  // VERSION_CODE
 #include <linux/module.h>
 #include <linux/platform_device.h>
 
 static struct platform_device *pdev;
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 10, 0)
 static void gpio_simple_remove(struct platform_device *);
+#else
+static int gpio_simple_remove(struct platform_device *);
+#endif
 static int gpio_simple_probe(struct platform_device *);
 
 static struct platform_driver gpio_simple_driver = {
@@ -11,8 +17,16 @@ static struct platform_driver gpio_simple_driver = {
         .driver = {.name   = "jmf-simple-demo",},
 };
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 10, 0)
 void gpio_simple_remove(struct platform_device *pdev)
-{printk(KERN_ALERT "Au revoir\n");}
+#else
+int gpio_simple_remove(struct platform_device *pdev)
+#endif
+{printk(KERN_ALERT "Au revoir\n");
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 10, 0)
+ return(0);
+#endif
+}
 
 static int gpio_simple_probe(struct platform_device *pdev)
 {printk(KERN_ALERT "Bonjour\n");return 0;}

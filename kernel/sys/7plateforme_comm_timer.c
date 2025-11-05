@@ -1,4 +1,5 @@
 // while true; do cat <  /sys/devices/platform/gpio-comm.0/valuer ;done
+#include <linux/version.h>  // VERSION_CODE
 #include <linux/module.h> 
 #include <linux/platform_device.h>
 #include <linux/version.h>
@@ -25,8 +26,16 @@ static ssize_t gpio_simple_show(struct device *dev, struct device_attribute *att
 static DEVICE_ATTR(valuer, 0444, gpio_simple_show, NULL);
 static DEVICE_ATTR(valuew, 0222, NULL, gpio_simple_store);
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 10, 0)
 static void gpio_simple_remove(struct platform_device *pdev)
-{printk(KERN_ALERT "Au revoir\n");}
+#else
+static int gpio_simple_remove(struct platform_device *pdev)
+#endif
+{printk(KERN_ALERT "Au revoir\n");
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 10, 0)
+ return(0);
+#endif
+}
 
 static int gpio_simple_probe(struct platform_device *pdev)
 {printk(KERN_ALERT "Bonjour\n");return 0;}
