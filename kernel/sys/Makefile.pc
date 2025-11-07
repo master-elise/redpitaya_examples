@@ -5,7 +5,8 @@ obj-m	+= 4driver_alone.o
 obj-m	+= 5plateforme_comm.o
 obj-m	+= 6plateforme_comm_rw.o
 obj-m	+= 7plateforme_comm_timer.o
-obj-m	+= 4driver_alone.o
+obj-m   += 8driver_resource.o
+obj-m   += 8device_resource.o
 
 # keep preprocessor output with .i extension
 EXTRA_CFLAGS="-save-temps" 

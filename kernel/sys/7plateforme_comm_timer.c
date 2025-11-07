@@ -4,7 +4,6 @@
 #include <linux/platform_device.h>
 #include <linux/version.h>
 
-static struct platform_device *pdev;
 struct timer_list exp_timer;
 struct mutex m;
 int delay = 3;
@@ -32,13 +31,20 @@ static void gpio_simple_remove(struct platform_device *pdev)
 static int gpio_simple_remove(struct platform_device *pdev)
 #endif
 {printk(KERN_ALERT "Au revoir\n");
+ device_remove_file(&pdev->dev, &dev_attr_valuer);
+ device_remove_file(&pdev->dev, &dev_attr_valuew);
+ platform_device_unregister(pdev);
 #if LINUX_VERSION_CODE < KERNEL_VERSION(6, 10, 0)
  return(0);
 #endif
 }
 
 static int gpio_simple_probe(struct platform_device *pdev)
-{printk(KERN_ALERT "Bonjour\n");return 0;}
+{device_create_file(&pdev->dev, &dev_attr_valuer);
+ device_create_file(&pdev->dev, &dev_attr_valuew);
+ printk(KERN_ALERT "Bonjour\n");
+ return 0;
+}
 
 static struct platform_driver gpio_simple_driver = {
         .probe          = gpio_simple_probe,
@@ -58,10 +64,7 @@ static void do_something(struct timer_list *t)
 
 static int __init gpio_simple_init(void)
 {platform_driver_register(&gpio_simple_driver);
- pdev = platform_device_register_simple("gpio-comm", 0, NULL, 0);
- device_create_file(&pdev->dev, &dev_attr_valuer);
- device_create_file(&pdev->dev, &dev_attr_valuew);
-
+ platform_device_register_simple("gpio-comm", 0, NULL, 0);
  mutex_init(&m);
 #if LINUX_VERSION_CODE <= KERNEL_VERSION(4,14,0)
  init_timer_on_stack(&exp_timer);  // -> replaced since 4.14
@@ -77,12 +80,10 @@ static int __init gpio_simple_init(void)
 }
 
 static void __exit gpio_simple_exit(void)
-{device_remove_file(&pdev->dev, &dev_attr_valuer);
- device_remove_file(&pdev->dev, &dev_attr_valuew);
- platform_device_unregister(pdev);
- platform_driver_unregister(&gpio_simple_driver);
+{platform_driver_unregister(&gpio_simple_driver);
  del_timer(&exp_timer);
 }
+
 module_init(gpio_simple_init)
 module_exit(gpio_simple_exit)
 
