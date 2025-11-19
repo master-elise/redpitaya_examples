@@ -91,7 +91,6 @@ static int composant_probe(struct platform_device *pdev)
 
  printk(KERN_ALERT ". Entering probe\n");
  indio_dev = devm_iio_device_alloc(&pdev->dev, sizeof(*st)); // alloc taille structure IIO + description pilote (st)
- printk("indio_dev: %x\n",indio_dev);
  if (!indio_dev) return -ENOMEM;
  st = iio_priv(indio_dev);                                  // recup du pointeur de la description pilote
  platform_set_drvdata(pdev, indio_dev);

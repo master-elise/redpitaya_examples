@@ -2,6 +2,8 @@
 #include <linux/platform_device.h>
 #include <linux/module.h>
 
+void plat_gr_release(struct device *dev);
+
 void plat_gr_release(struct device *dev) 
 {printk(KERN_INFO "board released\r\n");}
 
