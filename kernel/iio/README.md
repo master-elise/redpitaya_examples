@@ -3,3 +3,9 @@
 ``composant1``: channel definition without macros
 
 ``composant2``: channel definition with macros
+
+To execute:
+```
+make
+./go.sh
+```
