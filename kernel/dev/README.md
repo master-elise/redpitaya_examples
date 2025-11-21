@@ -21,7 +21,7 @@ compilation procedure and the ``Makefile``
 * ``4mymod.c``
 * ``4mymod_pc.c``
 * ``4mymod_version_gpiolib.c``
-* ``5mymod_int.c``
+* ``5mymod_int.c``: interrupt handling (MIO10 of Red Pitaya)
 * ``6mymod_int.c``
 * ``6user_prog.c``
 * ``7mymod_task.c``

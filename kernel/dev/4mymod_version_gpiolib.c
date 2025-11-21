@@ -8,7 +8,11 @@
 struct timer_list exp_timer;
 
 // int jmf_gpio=906+0; // 7 en conflit avec heartbeat => virer leds_gpio et led_class (sinon +0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,6,0)
+int jmf_gpio=512+10;
+#else
 int jmf_gpio=906+10; // ou ('port'-'A')*32+pin dans devicetree
+#endif
 volatile int jmf_stat=0;
 
 #define mio 0

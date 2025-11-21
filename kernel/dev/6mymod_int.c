@@ -82,7 +82,11 @@ int hello_start()  // init_module(void)
  printk(KERN_INFO "Hello\n");
         
 #ifdef __ARMEL__
- gpio =906+10;  // PB2 : version devicetree ; 15 en version script.fex
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,6,0)
+ gpio =512+10;
+#else
+ gpio =906+10;
+#endif
  err=gpio_is_valid(gpio);
  err=gpio_request_one(gpio, GPIOF_IN, "jmf_irq");
  if (err!=-22)

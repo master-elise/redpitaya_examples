@@ -1,4 +1,4 @@
-// mknod /dev/jmf c 90 0
+// mknod /dev/jmf c 91 0
 
 #include <linux/module.h>       /* Needed by all modules */
 #include <linux/kernel.h>       /* Needed for KERN_INFO */

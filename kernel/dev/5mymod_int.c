@@ -5,6 +5,7 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/gpio.h>
+#include <linux/version.h>
 
 static int dummy, irq, jmf_gpio, dev_id;
 
@@ -22,7 +23,11 @@ int hello_start()  // init_module(void)
 {int err;
 
  printk(KERN_INFO "Hello\n");
- jmf_gpio =906+10;  // PB2 : version devicetree ; 15 en version script.fex
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,6,0)
+ jmf_gpio =512+10;
+#else
+ jmf_gpio =906+10;
+#endif
  err=gpio_is_valid(jmf_gpio);
  err=gpio_request_one(jmf_gpio, GPIOF_IN, "jmf_irq");
  if (err!=-22) 

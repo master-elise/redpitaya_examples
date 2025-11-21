@@ -38,7 +38,6 @@ static irqreturn_t irq_handler(int irq, void *dev_id)
  dummy++;
  printk(KERN_INFO "plip %d",dummy);
  return IRQ_HANDLED; 
-
 }
 
 void do_something(struct work_struct *data)
@@ -65,14 +64,18 @@ void do_something(struct work_struct *data)
 }
 
 int hello_start()  // init_module(void) 
-{int t=register_chrdev(90,"jmf",&fops);  // major = 90
+{int t=register_chrdev(91,"jmf",&fops);  // major = 90
  int err;
 
  if (t<0) printk(KERN_ALERT "registration failed\n");
     else printk(KERN_ALERT "registration success\n");
  printk(KERN_INFO "Hello\n");
         
- gpio =('B'-'A')*32+2; // PB2 en devicetree ; 15 en script.fex
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,6,0)
+ gpio =512+10;
+#else
+ gpio =906+10;
+#endif
  err=gpio_is_valid(gpio);
  err=gpio_request_one(gpio, GPIOF_IN, "jmf_irq");
  if (err!=-22) 
@@ -92,7 +95,7 @@ void hello_end() // cleanup_module(void)
 {printk(KERN_INFO "Goodbye\n");
  free_irq(irq,&irq_id);
  gpio_free(gpio);  // libere la GPIO pour la prochaine fois
- unregister_chrdev(90,"jmf");
+ unregister_chrdev(91,"jmf");
 }
 
 static int dev_rls(struct inode *inod,struct file *fil)

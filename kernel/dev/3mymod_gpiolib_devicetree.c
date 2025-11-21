@@ -1,6 +1,8 @@
 #include <linux/module.h>       /* Needed by all modules */
 #include <linux/kernel.h>       /* Needed for KERN_INFO */
 #include <linux/gpio.h>
+#include <linux/version.h>
+
 /*
 #include <linux/pinctrl/pinctrl.h> // test PWM
 
