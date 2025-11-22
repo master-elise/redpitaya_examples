@@ -72,7 +72,7 @@ static int dev_write(struct file *fil,const char *buff,size_t len,loff_t *off)
  char buf[15];
  printk(KERN_ALERT "write ");
  if (len>14) mylen=14; else mylen=len;
- for (l=0;l<mylen;l++) buf[l]=buff[l];
+ for (l=0;l<mylen;l++) buf[l]=buff[l]; // not allowed to cross userspace/kernel space boundary
  buf[mylen]=0;
  printk(KERN_ALERT "%s \n",buf);
  return len;

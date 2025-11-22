@@ -12,6 +12,7 @@ static ssize_t gpio_simple_show(struct device *dev, struct device_attribute *att
 
 // JMF avoid error with user (non root) permissions on last bit by overriding
 //     the VERIFY_OCTAL_PERMISSIONS macro
+#undef VERIFY_OCTAL_PERMISSIONS   // avoid warning about macro redefinition
 #define VERIFY_OCTAL_PERMISSIONS(p) (p)
 
 static DEVICE_ATTR(jmfr, 0444, gpio_simple_show, NULL);

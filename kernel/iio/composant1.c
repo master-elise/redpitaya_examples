@@ -5,6 +5,7 @@
 #include <linux/iio/iio.h>
 #include <linux/mutex.h>                            
 #include <linux/mod_devicetable.h>                            
+#include <linux/version.h>                            
 
 #include "composant1.h"
 
@@ -114,11 +115,17 @@ static int composant_probe(struct platform_device *pdev)
  return 0;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 10, 0)
 static void composant_remove(struct platform_device *pdev)
+#else
+static int composant_remove(struct platform_device *pdev)
+#endif
 {struct iio_dev *indio_dev = platform_get_drvdata(pdev);
  printk(KERN_ALERT ". Removing\n");
  iio_device_unregister(indio_dev);  // c'est un driver IIO
-// return 0;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 10, 0)
+ return 0;
+#endif
 }
 
 static struct platform_driver composant_driver = {

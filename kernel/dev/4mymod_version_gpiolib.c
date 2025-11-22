@@ -26,8 +26,8 @@ static void do_something(struct timer_list *data)
 static void do_something(unsigned long data)
 #endif
 {printk(KERN_INFO "plop: %lu",jiffies);
- jmf_stat=(1<<mio)-jmf_stat;
- writel(jmf_stat,(void*)(jmf_gpio+0x40)); 
+ jmf_stat=(1)-jmf_stat;
+ gpio_set_value(jmf_gpio,jmf_stat);
  mod_timer(&exp_timer, jiffies + HZ);
 }
 
@@ -40,19 +40,22 @@ int hello_start()  // init_module(void)
  printk(KERN_INFO "Hello\n");
  err=gpio_is_valid(jmf_gpio);
  printk(KERN_INFO "err: %d\n",err);
- err=gpio_request_one(jmf_gpio, GPIOF_OUT_INIT_LOW, "jmf_gpio"); // voir dans gpio.h
- printk(KERN_INFO "err: %d\n",err);
+ if (err==-517)
+   printk(KERN_INFO "gpio_zynq must be loaded to handle gpiolib requests\n");
+ else
+   {err=gpio_request_one(jmf_gpio, GPIOF_OUT_INIT_LOW, "jmf_gpio"); // voir dans gpio.h
+    printk(KERN_INFO "err: %d\n",err);
         
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5,0,0) || LINUX_VERSION_CODE >= KERNEL_VERSION(6,0,0)
-  timer_setup(&exp_timer,do_something,0);
+    timer_setup(&exp_timer,do_something,0);
 #else
- init_timer_on_stack(&exp_timer);
- exp_timer.data = 0;
- exp_timer.function = do_something;
+    init_timer_on_stack(&exp_timer);
+    exp_timer.data = 0;
+    exp_timer.function = do_something;
 #endif
- exp_timer.expires = jiffies + delay * HZ; // HZ specifies number of clock ticks generated per second
- add_timer(&exp_timer);
-
+    exp_timer.expires = jiffies + delay * HZ; // HZ specifies number of clock ticks generated per second
+    add_timer(&exp_timer);
+   }
  return 0;
 }
 

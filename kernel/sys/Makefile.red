@@ -1,7 +1,7 @@
 BR?=/home/jmfriedt/buildroot-2025.05.1_redpit
 PATH:=$(PATH):$(BR)/output/host/usr/bin/
 
-obj-m += 1plateforme_simple.o 2plateforme_double.o 3device_alone.o 3driver_alone.o 4driver_alone.o 5plateforme_comm.o 6plateforme_comm_rw.o 7plateforme_comm_timer.o
+obj-m += 1plateforme_simple.o 2plateforme_double.o 3device_alone.o 3driver_alone.o 4driver_alone.o 5plateforme_comm.o 6plateforme_comm_rw.o 7plateforme_comm_timer.o 8device_resource.o 8driver_resource.o
 
 all:
 	echo $(PATH)

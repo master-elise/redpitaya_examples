@@ -14,13 +14,14 @@ on the target !
 
 * ``0mymod.c``: first example, ``module_init`` and ``module_exit``, getting familiar with the 
 compilation procedure and the ``Makefile``
-* ``1mymod.c``: communication and definition of the system call handling functions
-* ``2mymod.c``
+* ``1mymod.c``: communication and definition of the system call handling functions. Assumes a
+``/dev/entry`` with major number 91 was created using ``mknod``
+* ``2mymod.c``: uses the misc device to auomatically create the entry in ``/dev/``
 * ``2mymod.kernel_panic``
 * ``3mymod_gpiolib_devicetree.c``: using gpiolib for accessing hardware
-* ``4mymod.c``
+* ``4mymod.c``: blinking LED triggered by timer
 * ``4mymod_pc.c``
-* ``4mymod_version_gpiolib.c``
+* ``4mymod_version_gpiolib.c``: blinking LED triggered by timer, using gpiolib
 * ``5mymod_int.c``: interrupt handling (MIO10 of Red Pitaya)
 * ``6mymod_int.c``
 * ``6user_prog.c``

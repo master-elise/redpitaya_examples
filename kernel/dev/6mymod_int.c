@@ -89,7 +89,7 @@ int hello_start()  // init_module(void)
 #endif
  err=gpio_is_valid(gpio);
  err=gpio_request_one(gpio, GPIOF_IN, "jmf_irq");
- if (err!=-22)
+ if ((err!=-22) && (err!=-517))
     {printk(KERN_ALERT "gpio_request %d=%d\n",gpio,err);
      irq = gpio_to_irq(gpio);
      printk(KERN_ALERT "gpio_to_irq=%d\n",irq);
@@ -98,6 +98,7 @@ int hello_start()  // init_module(void)
      printk(KERN_ALERT "finished IRQ: error=%d\n",err);
      dummy=0;
     }
+ else gpio=0;
 #else
  timer_setup(&exp_timer,irq_handler,0); // was init_timer_on_stack(&exp_timer); -> replaced since 4.14
  exp_timer.expires = jiffies + HZ; // HZ specifies number of clock ticks generated per second
@@ -109,8 +110,10 @@ int hello_start()  // init_module(void)
 void hello_end() // cleanup_module(void)
 {printk(KERN_INFO "Goodbye\n");
 #ifdef __ARMEL__
- free_irq(irq,&id);
- gpio_free(gpio);  // libere la GPIO pour la prochaine fois
+ if (gpio!=0)  // failed
+   {free_irq(irq,&id);
+    gpio_free(gpio);  // libere la GPIO pour la prochaine fois
+   }
 #else
  del_timer(&exp_timer);  
 #endif
