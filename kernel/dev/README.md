@@ -24,6 +24,10 @@ compilation procedure and the ``Makefile``
 * ``4mymod_version_gpiolib.c``: blinking LED triggered by timer, using gpiolib
 * ``5mymod_int.c``: interrupt handling (MIO10 of Red Pitaya). Assumes PIO10 is changed from SPI to GPIO
 with ``devmem 0xF8000728 32 0x00001600``
+
+<img src="IMG_20251122_204148_844.jpg">
+
+Connect PIO10 to GND to trigger the interrupt.
 * ``6mymod_int.c``: interrupt handling (MIO10 of Red Pitaya) and sending a signal to a userspace program
 (through SIGUSR1). To demonstrate beyond the ``dmesg`` message, compile (``arm-linux-gcc -o exec 6user_prog.c``) and
 execute the userspace program to handle the signal in userspace whenever PIO10 is connected to ground.
